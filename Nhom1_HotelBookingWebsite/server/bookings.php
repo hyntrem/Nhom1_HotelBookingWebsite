@@ -1,0 +1,1 @@
+<?php // bookings.php ?>

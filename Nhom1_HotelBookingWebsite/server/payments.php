@@ -1,0 +1,1 @@
+<?php // payments.php ?>
