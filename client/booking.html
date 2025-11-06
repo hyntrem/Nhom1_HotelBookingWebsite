@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Đặt Phòng - Grandoria Hotel</title>
+
+  <!-- Favicons -->
+  <link rel="icon" href="assets/img/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+</head>
+
+<body class="booking-page">
+
+  <!-- HEADER -->
+  <header id="header" class="header sticky-top">
+    <div class="topbar d-flex align-items-center dark-background">
+      <div class="container d-flex justify-content-center justify-content-md-between">
+        <div class="contact-info d-flex align-items-center">
+          <i class="bi bi-envelope d-flex align-items-center">
+            <a href="mailto:contact@grandoriahotel.com">contact@grandoriahotel.com</a>
+          </i>
+          <i class="bi bi-phone d-flex align-items-center ms-4">
+            <span>+84 1900 1533</span>
+          </i>
+        </div>
+      </div>
+    </div>
+
+    <div class="branding d-flex align-items-center">
+      <div class="container position-relative d-flex align-items-center justify-content-between">
+        <a href="index.html" class="logo d-flex align-items-center">
+          <h1 class="sitename">Grandoria</h1>
+        </a>
+
+        <nav id="navmenu" class="navmenu">
+          <ul>
+            <li><a href="index.html" class="text-uppercase">Trang chủ</a></li>
+            <li><a href="about.html" class="text-uppercase">Giới thiệu</a></li>
+            <li><a href="rooms.html" class="text-uppercase">Phòng</a></li>
+            <li><a href="amenities.html" class="text-uppercase">Tiện nghi</a></li>
+            <li><a href="offers.html" class="text-uppercase">Ưu đãi</a></li>
+            <li><a href="booking.html" class="active text-uppercase">Đặt phòng</a></li>
+            <li class="dropdown">
+              <a href="#" class="text-uppercase"><span>Khác</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                <li><a href="terms.html">Điều khoản</a></li>
+                <li><a href="privacy.html">Chính sách bảo mật</a></li>
+              </ul>
+            </li>
+          </ul>
+          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+<main class="main">
+
+  <!-- Tiêu đề trang -->
+  <div class="page-title light-background">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">Đặt Phòng</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li><a href="index.html">Trang chủ</a></li>
+          <li class="current">Đặt phòng</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Khu vực đặt phòng -->
+  <section id="booking" class="booking section">
+    <div class="container">
+
+      <div class="reservation-wrapper">
+
+        <div class="reservation-header text-center mb-4">
+          <h2>Đặt Phòng Của Bạn</h2>
+          <p class="lead">Trải nghiệm dịch vụ đẳng cấp với quy trình đặt phòng nhanh chóng và tiện lợi.</p>
+        </div>
+
+        <div class="booking-grid">
+          <!-- Form đặt phòng -->
+          <div class="booking-form-section">
+            <div class="form-container">
+              <form class="reservation-form" action="" method="POST">
+
+                <div class="form-section">
+                  <h4>Thông Tin Đặt Phòng</h4>
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="arrival-date" class="form-label">Ngày nhận phòng</label>
+                      <input type="date" class="form-control" id="arrival-date" name="arrival_date" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="departure-date" class="form-label">Ngày trả phòng</label>
+                      <input type="date" class="form-control" id="departure-date" name="departure_date" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="guest-count" class="form-label">Số lượng khách</label>
+                      <select class="form-select" id="guest-count" name="guest_count" required>
+                        <option value="">Chọn số khách</option>
+                        <option value="1">1 khách</option>
+                        <option value="2">2 khách</option>
+                        <option value="3">3 khách</option>
+                        <option value="4">4 khách</option>
+                        <option value="5">5+ khách</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="room-count" class="form-label">Số lượng phòng</label>
+                      <select class="form-select" id="room-count" name="room_count" required>
+                        <option value="">Chọn số phòng</option>
+                        <option value="1">1 phòng</option>
+                        <option value="2">2 phòng</option>
+                        <option value="3">3 phòng</option>
+                        <option value="4">4+ phòng</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-section">
+                  <h4>Loại Phòng & Yêu Cầu</h4>
+                  <div class="form-group">
+                    <label for="accommodation-type" class="form-label">Loại phòng</label>
+                    <select class="form-select" id="accommodation-type" name="accommodation_type">
+                      <option value="">Không yêu cầu</option>
+                      <option value="classic">Phòng Tiêu Chuẩn</option>
+                      <option value="premium">Phòng Cao Cấp</option>
+                      <option value="junior-suite">Phòng Junior Suite</option>
+                      <option value="luxury-suite">Phòng Luxury Suite</option>
+                      <option value="penthouse">Phòng Penthouse</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="additional-notes" class="form-label">Ghi chú thêm</label>
+                    <textarea class="form-control" id="additional-notes" name="additional_notes" rows="3" placeholder="Nhập yêu cầu hoặc lưu ý đặc biệt của bạn..."></textarea>
+                  </div>
+                </div>
+
+                <div class="form-section">
+                  <h4>Thông Tin Khách Hàng</h4>
+                  <div class="form-grid">
+                    <div class="form-group full-width">
+                      <label for="primary-guest" class="form-label">Họ và tên</label>
+                      <input type="text" class="form-control" id="primary-guest" name="primary_guest" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="contact-email" class="form-label">Email</label>
+                      <input type="email" class="form-control" id="contact-email" name="contact_email" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="contact-phone" class="form-label">Số điện thoại</label>
+                      <input type="tel" class="form-control" id="contact-phone" name="contact_phone" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-calendar-plus me-2"></i>
+                    Gửi Yêu Cầu Đặt Phòng
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+
+          <!-- Hình ảnh & tiện ích -->
+          <div class="hotel-showcase">
+            <div class="showcase-image">
+              <img src="assets/img/hotel/showcase-1.webp" alt="Khách sạn Grandoria" class="img-fluid">
+            </div>
+
+            <div class="hotel-highlights">
+              <h3>Vì Sao Chọn Chúng Tôi</h3>
+              <div class="highlights-grid">
+                <div class="highlight-item">
+                  <div class="highlight-icon"><i class="bi bi-wifi"></i></div>
+                  <div class="highlight-content">
+                    <h5>Internet tốc độ cao</h5>
+                    <p>Phủ sóng Wi-Fi miễn phí toàn khu vực</p>
+                  </div>
+                </div>
+                <div class="highlight-item">
+                  <div class="highlight-icon"><i class="bi bi-clock"></i></div>
+                  <div class="highlight-content">
+                    <h5>Phục vụ 24/7</h5>
+                    <p>Luôn sẵn sàng hỗ trợ khách hàng mọi lúc</p>
+                  </div>
+                </div>
+                <div class="highlight-item">
+                  <div class="highlight-icon"><i class="bi bi-car-front"></i></div>
+                  <div class="highlight-content">
+                    <h5>Bãi đỗ xe & valet</h5>
+                    <p>Dịch vụ đỗ xe chuyên nghiệp miễn phí</p>
+                  </div>
+                </div>
+                <div class="highlight-item">
+                  <div class="highlight-icon"><i class="bi bi-heart-pulse"></i></div>
+                  <div class="highlight-content">
+                    <h5>Trung tâm chăm sóc sức khỏe</h5>
+                    <p>Spa & phòng gym hiện đại, đẳng cấp</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="booking-guarantees">
+              <div class="guarantee-item"><i class="bi bi-shield-check"></i><span>Đặt phòng an toàn</span></div>
+              <div class="guarantee-item"><i class="bi bi-arrow-clockwise"></i><span>Huỷ linh hoạt</span></div>
+              <div class="guarantee-item"><i class="bi bi-telephone"></i><span>Hỗ trợ 24/7</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+  <!-- FOOTER -->
+  <footer id="footer" class="footer position-relative dark-background">
+    <div class="footer-top">
+      <div class="container">
+        <div class="row gy-4">
+
+          <!-- Cột 1: Giới thiệu -->
+          <div class="col-lg-4 col-md-6 footer-about">
+            <a href="index.html" class="logo d-flex align-items-center text-decoration-none">
+              <span class="sitename">Grandoria Hotel</span>
+            </a>
+            <div class="footer-contact pt-3">
+              <p>123 Ocean View Avenue</p>
+              <p>Đà Nẵng, Việt Nam</p>
+              <p class="mt-3"><strong>Hotline:</strong> +84 1900 1533</p>
+              <p><strong>Email:</strong> contact@grandoriahotel.com</p>
+            </div>
+          </div>
+
+          <!-- Cột 2: Liên kết nhanh -->
+          <div class="col-lg-2 col-md-3 footer-links">
+            <h4>Liên kết nhanh</h4>
+            <ul>
+              <li><a href="index.html">Trang chủ</a></li>
+              <li><a href="about.html">Giới thiệu</a></li>
+              <li><a href="rooms.html">Phòng & Giá</a></li>
+              <li><a href="amenities.html">Tiện nghi</a></li>
+              <li><a href="offers.html">Ưu đãi</a></li>
+            </ul>
+          </div>
+
+          <!-- Cột 3: Dịch vụ -->
+          <div class="col-lg-3 col-md-3 footer-links">
+            <h4>Dịch vụ của chúng tôi</h4>
+            <ul>
+              <li>Nhà hàng & Quầy bar</li>
+              <li>Spa & Massage</li>
+              <li>Phòng hội nghị</li>
+              <li>Đưa đón sân bay</li>
+              <li>Hồ bơi & Gym</li>
+            </ul>
+          </div>
+
+          <!-- Cột 4: Giờ hoạt động -->
+          <div class="col-lg-3 col-md-3 footer-links">
+            <h4>Giờ hoạt động</h4>
+            <ul>
+              <li><strong>Check-in:</strong> 14:00</li>
+              <li><strong>Check-out:</strong> 12:00</li>
+              <li><strong>Nhà hàng:</strong> 6:00 - 22:00</li>
+              <li><strong>Hỗ trợ khách hàng:</strong> 24/7</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+    <i class="bi bi-arrow-up-short"></i>
+  </a>
+
+  <!-- JS -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/js/main.js"></script>
+
+</body>
+</html>
