@@ -2574,9 +2574,6 @@ section,
     padding: 20px 15px;
   }
 }
-
-
-
 /*--------------------------------------------------------------
 # Menu Section
 --------------------------------------------------------------*/
@@ -3155,3 +3152,68 @@ section,
   }
 }
 
+/* ===========================
+   CUSTOM THEME - XANH LÁ ĐẬM
+=========================== */
+
+/* Màu chủ đạo */
+:root {
+  --main-green: #2f5d50;
+  --main-green-dark: #24483f;
+  --text-white: #ffffff;
+}
+
+/* Header nền xanh lá */
+.header {
+  background-color: var(--main-green) !important;
+}
+
+/* Chữ header */
+.header .logo h1,
+.header .navmenu a {
+  color: var(--text-white) !important;
+}
+
+/* Nút đăng nhập / đăng ký */
+.auth-buttons .btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-light {
+  color: var(--text-white);
+  border: 1px solid var(--text-white);
+}
+.btn-outline-light:hover {
+  background-color: var(--text-white);
+  color: var(--main-green);
+}
+
+.btn-light {
+  background-color: var(--text-white);
+  color: var(--main-green);
+}
+.btn-light:hover {
+  background-color: #e5f0eb;
+}
+
+/* Nút đăng xuất */
+.btn-danger {
+  background-color: #c62828;
+  border: none;
+}
+.btn-danger:hover {
+  background-color: #a61d1d;
+}
+
+/* Hover menu */
+.header .navmenu a:hover {
+  color: #e5f0eb;
+}
+
+/* Topbar */
+.topbar {
+  background-color: var(--main-green-dark);
+}
