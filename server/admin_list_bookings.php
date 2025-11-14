@@ -18,4 +18,3 @@ $bookings = $stmt->fetchAll();
 
 json_response(['bookings' => $bookings]);
 ?>
-
