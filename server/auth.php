@@ -1,20 +1,11 @@
-<?php // auth.php 
-
+<?php
 session_start();
-require_once __DIR__ . '/helpers.php';
+header('Content-Type: application/json');
 
-function require_login() {
-if (empty($_SESSION['user']) || empty($_SESSION['user']['id'])) {
-json_response(['error' => 'authentication required'], 401);
-}
-return $_SESSION['user'];
-}
 
-function require_admin() {
-$user = require_login();
-if (($user['role'] ?? 'user') !== 'admin') {
-json_response(['error' => 'admin required'], 403);
-}
-return $user;
+if (!isset($_SESSION['user_id'])) {
+http_response_code(401);
+echo json_encode(["error" => "Bạn chưa đăng nhập"]);
+exit;
 }
 ?>
