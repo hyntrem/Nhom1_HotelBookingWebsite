@@ -1,5 +1,5 @@
-<?php
-// book_room.php
+<?php // book_room.php
+
 require_once __DIR__ . '/db_connect.php';
 require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/auth.php';
@@ -15,7 +15,7 @@ json_response(['error' => 'Method not allowed'], 405);
 
 $input = json_input();
 $room_id = (int)($input['room_id'] ?? 0);
-$check_in = $input['check_in'] ?? null; // YYYY-MM-DD
+$check_in = $input['check_in'] ?? null;
 $check_out = $input['check_out'] ?? null;
 
 
