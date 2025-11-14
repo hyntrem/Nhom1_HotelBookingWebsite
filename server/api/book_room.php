@@ -1,38 +1,57 @@
 <?php // book_room.php
 require_once 'db_connect.php';
 require_once 'helpers.php';
+require_once 'auth.php';
 
-$q = trim($_GET['q'] ?? '');
-$type = trim($_GET['type'] ?? '');
-$min_price = $_GET['min_price'] ?? null;
-$max_price = $_GET['max_price'] ?? null;
+$user = require_login();
 
-$sql = "SELECT id, room_number, type, price, description FROM rooms WHERE is_active = 1";
-$params = [];
-
-if ($q !== '') {
-    $sql .= " AND (room_number LIKE ? OR type LIKE ? OR description LIKE ?)";
-    $like = "%$q%";
-    $params = array_merge($params, [$like, $like, $like]);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    json_response(['error' => 'Method not allowed'], 405);
 }
 
-if ($type !== '') {
-    $sql .= " AND type = ?";
-    $params[] = $type;
+$input = json_input();
+$room_id = (int)($input['room_id'] ?? 0);
+$check_in = $input['check_in'] ?? '';
+$check_out = $input['check_out'] ?? '';
+
+if (!$room_id || !$check_in || !$check_out) {
+    json_response(['error' => 'room_id, check_in, check_out required'], 422);
 }
 
-if ($min_price !== null) {
-    $sql .= " AND price >= ?";
-    $params[] = $min_price;
+// validate dates
+if (!preg_match('/^\\d{4}-\\d{2}-\\d{2}$/', $check_in) ||
+    !preg_match('/^\\d{4}-\\d{2}-\\d{2}$/', $check_out)) {
+    json_response(['error' => 'invalid date format'], 422);
 }
 
-if ($max_price !== null) {
-    $sql .= " AND price <= ?";
-    $params[] = $max_price;
+if ($check_in >= $check_out) {
+    json_response(['error' => 'check_out must be after check_in'], 422);
 }
 
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
+// room exists?
+$stmt = $pdo->prepare("SELECT id FROM rooms WHERE id = ? AND is_active = 1");
+$stmt->execute([$room_id]);
+if (!$stmt->fetch()) json_response(['error' => 'room not found'], 404);
 
-json_response(['rooms' => $stmt->fetchAll()]);
+// check availability
+$stmt = $pdo->prepare("
+    SELECT COUNT(*) FROM bookings
+    WHERE room_id = ?
+      AND status != 'cancelled'
+      AND NOT (check_out <= ? OR check_in >= ?)
+");
+$stmt->execute([$room_id, $check_in, $check_out]);
+
+if ($stmt->fetchColumn() > 0) {
+    json_response(['error' => 'room not available'], 409);
+}
+
+// create booking
+$stmt = $pdo->prepare("
+    INSERT INTO bookings (user_id, room_id, check_in, check_out, status)
+    VALUES (?, ?, ?, ?, 'pending')
+");
+$stmt->execute([$user['id'], $room_id, $check_in, $check_out]);
+
+json_response(['message' => 'booking_created']);
 ?>
