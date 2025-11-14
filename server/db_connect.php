@@ -1,7 +1,7 @@
-<?php// db_connect.php
+<?php // db_connect.php
 
 $DB_HOST = getenv('DB_HOST') ?: '127.0.0.1';
-$DB_NAME = getenv('DB_NAME') ?: 'grandoria';
+$DB_NAME = getenv('DB_NAME') ?: 'homestay_db';
 $DB_USER = getenv('DB_USER') ?: 'root';
 $DB_PASS = getenv('DB_PASS') ?: '';
 $DB_CHARSET = 'utf8mb4';
