@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css"> <!-- dùng CSS có sẵn của project -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .admin-header {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .admin-box {
+            padding: 20px;
+            border-radius: 8px;
+            background: #f7f7f7;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .logout-btn {
+            padding: 10px 20px;
+            background: #ff4d4d;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- CHECK QUYỀN ADMIN -->
+<script>
+const user = JSON.parse(localStorage.getItem("user"));
+const role = localStorage.getItem("role");
+
+if (!user || role !== "admin") {
+    alert("Bạn không có quyền truy cập trang Admin.");
+    window.location.href = "login.html";
+}
+</script>
+
+<div class="admin-header">Welcome Admin: <span id="adminName"></span></div>
+
+<div class="admin-box">
+    <h3>Quản lý hệ thống</h3>
+    <ul>
+        <li><a href="#">Quản lý người dùng</a></li>
+        <li><a href="#">Quản lý phòng</a></li>
+        <li><a href="#">Quản lý đặt phòng</a></li>
+        <li><a href="#">Báo cáo doanh thu</a></li>
+    </ul>
+</div>
+
+<button class="logout-btn" onclick="logout()">Đăng xuất</button>
+
+<script>
+document.getElementById("adminName").innerText = user.name || user.email;
+
+// Hàm logout
+function logout() {
+    localStorage.removeItem("user");
+    localStorage.removeItem("role");
+    window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>
