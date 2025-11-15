@@ -152,31 +152,52 @@
   <script src="assets/js/main.js"></script>
 
   <script>
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-      try {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (!email || !password) {
+        alert("Vui lòng nhập đầy đủ email và mật khẩu.");
+        return;
+    }
+
+    const payload = { email, password };
+
+    try {
         const res = await fetch("../server/api/login.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
         });
-        const data = await res.json();
 
-        if (data.status === "success") {
-          localStorage.setItem("user", JSON.stringify(data));
-          alert("Đăng nhập thành công!");
-          window.location.href = data.role === "admin" ? "admin_dashboard.html" : "index.html";
-        } else {
-          alert("Sai thông tin đăng nhập!");
+        let data = await res.json();
+
+        // Kiểm tra thành công
+        const ok = data.status === "success" || data.success === true || res.ok;
+
+        if (!ok) {
+            alert(data.message || "Sai email hoặc mật khẩu!");
+            return;
         }
-      } catch (error) {
-        alert("Lỗi kết nối đến máy chủ!");
-        console.error(error);
-      }
-    });
+
+        // Lưu user và role
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("role", data.role);
+
+        // Chuyển hướng theo role
+        if (data.role === "admin") {
+            window.location.href = "admin_dashboard.html";
+        } else {
+            window.location.href = "index.html";
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Không thể kết nối tới server.");
+    }
+});
   </script>
 
 </body>
