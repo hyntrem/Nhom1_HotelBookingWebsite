@@ -1,36 +1,45 @@
-<?php // login.php
+<?php
+header("Content-Type: application/json; charset=UTF-8");
 
-require_once '../db_connect.php';
-session_start();
+$input = json_decode(file_get_contents("php://input"), true);
 
-header('Content-Type: application/json');
-
-// Đọc JSON input
-$input = json_decode(file_get_contents('php://input'), true);
-$email = $input['email'] ?? '';
-$password = $input['password'] ?? '';
-
-if (!$email || !$password) {
-    echo json_encode(["error" => "Thiếu thông tin đăng nhập"]);
+if (!$input) {
+    echo json_encode(["status" => "error", "message" => "Invalid JSON"]);
     exit;
 }
 
-try {
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
+$email = $input["email"] ?? "";
+$password = $input["password"] ?? "";
 
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role'];
-        
-        echo json_encode(["success" => true, "role" => $user['role']]);
-    } else {
-        echo json_encode(["error" => "Sai email hoặc mật khẩu"]);
-    }
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(["error" => "Lỗi kết nối máy chủ", "message" => $e->getMessage()]);
+// KẾT NỐI DATABASE
+include "../config/dbconnect.php"; // giữ nguyên đúng file gốc của bạn
+
+$sql = "SELECT * FROM users WHERE email = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+if (!$user) {
+    echo json_encode(["status" => "error", "message" => "Email không tồn tại"]);
+    exit;
 }
+
+// Kiểm tra mật khẩu plaintext (theo đúng DB dự án của bạn)
+if ($password !== $user["password"]) {
+    echo json_encode(["status" => "error", "message" => "Sai mật khẩu"]);
+    exit;
+}
+
+// JSON trả về
+echo json_encode([
+    "status" => "success",
+    "role" => $user["role"],
+    "user" => [
+        "id" => $user["id"],
+        "name" => $user["username"],
+        "email" => $user["email"]
+    ]
+]);
 ?>
