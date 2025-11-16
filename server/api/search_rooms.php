@@ -1,44 +1,53 @@
-<?php // search_rooms.php
+<?php
+// search_rooms.php - Sửa theo DB homestay_db
 
 require_once __DIR__ . '/db_connect.php';
 require_once __DIR__ . '/helpers.php';
 
-
+// Nhận input từ GET
 $q = trim($_GET['q'] ?? '');
 $type = trim($_GET['type'] ?? '');
 $min_price = is_numeric($_GET['min_price'] ?? null) ? (float)$_GET['min_price'] : null;
 $max_price = is_numeric($_GET['max_price'] ?? null) ? (float)$_GET['max_price'] : null;
 
+// Query cơ bản
+$sql = "SELECT id, room_type, location, room_price, booked 
+        FROM homestay 
+        WHERE 1";
 
-$sql = 'SELECT id, room_number, type, price, description FROM rooms WHERE is_active = 1';
 $params = [];
 
-
+// Tìm theo keyword
 if ($q !== '') {
-$sql .= ' AND (room_number LIKE ? OR type LIKE ? OR description LIKE ?)';
-$like = "%{$q}%";
-$params[] = $like;
-$params[] = $like;
-$params[] = $like;
+    $sql .= " AND (room_type LIKE ? OR location LIKE ?)";
+    $like = "%{$q}%";
+    $params[] = $like;
+    $params[] = $like;
 }
+
+// Tìm theo loại phòng
 if ($type !== '') {
-$sql .= ' AND type = ?';
-$params[] = $type;
+    $sql .= " AND room_type = ?";
+    $params[] = $type;
 }
+
+// Lọc theo giá tối thiểu
 if ($min_price !== null) {
-$sql .= ' AND price >= ?';
-$params[] = $min_price;
+    $sql .= " AND room_price >= ?";
+    $params[] = $min_price;
 }
+
+// Lọc theo giá tối đa
 if ($max_price !== null) {
-$sql .= ' AND price <= ?';
-$params[] = $max_price;
+    $sql .= " AND room_price <= ?";
+    $params[] = $max_price;
 }
 
-
+// Thực thi query
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $rooms = $stmt->fetchAll();
 
-
+// Trả về JSON
 json_response(['rooms' => $rooms]);
 ?>

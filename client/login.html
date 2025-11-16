@@ -8,14 +8,11 @@
 
   <!-- Favicons -->
   <link rel="icon" href="assets/img/favicon.png" type="image/png">
-  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
-  <!-- Fonts -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;600;700&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS -->
   <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
@@ -25,98 +22,73 @@
   <!-- Main CSS -->
   <link rel="stylesheet" href="assets/css/main.css">
 
-  <!-- Custom Auth Page Style -->
+  <!-- Custom Login Page Style -->
   <style>
     :root {
       --main-green: #2f5d50;
-      --background-color: #ffffff;
       --text-color: #40524d;
     }
 
     body {
-      background-color: var(--background-color);
+      background: #f0f5f3;
       font-family: "Poppins", sans-serif;
       color: var(--text-color);
     }
 
-    .auth-container {
-      max-width: 400px;
-      margin: 100px auto;
-      padding: 2rem;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    .auth-container h2 {
-      text-align: center;
-      color: var(--main-green);
-      margin-bottom: 1.5rem;
-      font-weight: 700;
-    }
-
-    .auth-container label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .auth-container input {
-      width: 100%;
-      padding: 10px 14px;
-      margin-bottom: 1rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      transition: border-color 0.3s ease;
-    }
-
-    .auth-container input:focus {
-      border-color: var(--main-green);
-      outline: none;
-      box-shadow: 0 0 0 0.1rem rgba(47, 93, 80, 0.2);
-    }
-
-    .auth-container button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      background-color: var(--main-green);
-      color: #fff;
-      font-weight: 600;
-      transition: background-color 0.3s;
-    }
-
-    .auth-container button:hover {
-      background-color: color-mix(in srgb, var(--main-green), black 10%);
-    }
-
-    .auth-container p {
-      text-align: center;
-      margin-top: 1rem;
-    }
-
-    .auth-container a {
-      color: var(--main-green);
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    .auth-container a:hover {
-      text-decoration: underline;
-    }
-
     header .navbar {
       background-color: var(--main-green);
-      padding: 10px 0;
+      padding: 12px 0;
       text-align: center;
     }
 
     header .logo {
+      font-size: 1.5rem;
+      color: #fff;
       font-weight: 700;
-      color: white;
-      font-size: 1.4rem;
       text-decoration: none;
+    }
+
+    .auth-container {
+      max-width: 420px;
+      background: #fff;
+      margin: 90px auto;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      animation: fadeIn 0.5s;
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: 700;
+      color: var(--main-green);
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-container input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 1rem;
+      transition: 0.3s;
+    }
+
+    .auth-container button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      background: var(--main-green);
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -133,12 +105,13 @@
   <!-- LOGIN FORM -->
   <main class="auth-container" data-aos="fade-up">
     <h2>Đăng nhập tài khoản</h2>
+
     <form id="loginForm">
       <label for="email">Email</label>
-      <input type="email" id="email" required placeholder="Nhập email của bạn" />
+      <input type="email" id="email" placeholder="Nhập email của bạn" required>
 
       <label for="password">Mật khẩu</label>
-      <input type="password" id="password" required placeholder="Nhập mật khẩu" />
+      <input type="password" id="password" placeholder="Nhập mật khẩu" required>
 
       <button type="submit">Đăng nhập</button>
 
@@ -151,53 +124,54 @@
   <script src="assets/vendor/aos/aos.js"></script>
   <script src="assets/js/main.js"></script>
 
+  <!-- Login Logic FIXED -->
   <script>
-    document.getElementById("loginForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-    if (!email || !password) {
-        alert("Vui lòng nhập đầy đủ email và mật khẩu.");
+      if (!email || !password) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
         return;
-    }
+      }
 
-    const payload = { email, password };
+      const formData = new FormData();
+      formData.append("email", email);
+      formData.append("password", password);
 
-    try {
+      try {
         const res = await fetch("../server/api/login.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+          method: "POST",
+          body: formData
         });
 
-        let data = await res.json();
+        const data = await res.json();
 
-        // Kiểm tra thành công
-        const ok = data.status === "success" || data.success === true || res.ok;
-
-        if (!ok) {
-            alert(data.message || "Sai email hoặc mật khẩu!");
-            return;
+        if (!data.success) {
+          alert(data.message || "Sai email hoặc mật khẩu!");
+          return;
         }
 
-        // Lưu user và role
+        // Save login info
         localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("role", data.role);
+        localStorage.setItem("role", data.user.role);
 
-        // Chuyển hướng theo role
-        if (data.role === "admin") {
-            window.location.href = "admin_dashboard.html";
+        alert("Đăng nhập thành công!");
+
+        // Redirect
+        if (data.user.role === "admin") {
+          window.location.href = "admin_dashboard.html";
         } else {
-            window.location.href = "index.html";
+          window.location.href = "index.html";
         }
 
-    } catch (err) {
+      } catch (err) {
+        alert("Không thể kết nối server!");
         console.error(err);
-        alert("Không thể kết nối tới server.");
-    }
-});
+      }
+    });
   </script>
 
 </body>

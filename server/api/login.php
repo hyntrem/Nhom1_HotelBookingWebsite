@@ -1,45 +1,56 @@
 <?php
-header("Content-Type: application/json; charset=UTF-8");
+// server/api/login.php
 
-$input = json_decode(file_get_contents("php://input"), true);
+session_start();
 
-if (!$input) {
-    echo json_encode(["status" => "error", "message" => "Invalid JSON"]);
-    exit;
+require_once __DIR__ . '/../db_connect.php';
+require_once __DIR__ . '/../helpers.php';
+
+$input = json_input();
+
+$email    = trim($input['email']    ?? '');
+$password = trim($input['password'] ?? '');
+
+if ($email === '' || $password === '') {
+    json_response([
+        'status'  => 'error',
+        'message' => 'Thiếu email hoặc mật khẩu'
+    ], 400);
 }
 
-$email = $input["email"] ?? "";
-$password = $input["password"] ?? "";
-
-// KẾT NỐI DATABASE
-include "../config/dbconnect.php"; // giữ nguyên đúng file gốc của bạn
-
-$sql = "SELECT * FROM users WHERE email = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
+// lấy user theo email (lưu trong cột username)
+$stmt = $pdo->prepare('SELECT id, username, password, role FROM users WHERE username = ? LIMIT 1');
+$stmt->execute([$email]);
+$user = $stmt->fetch();
 
 if (!$user) {
-    echo json_encode(["status" => "error", "message" => "Email không tồn tại"]);
-    exit;
+    json_response([
+        'status'  => 'error',
+        'message' => 'Sai email hoặc mật khẩu'
+    ], 401);
 }
 
-// Kiểm tra mật khẩu plaintext (theo đúng DB dự án của bạn)
-if ($password !== $user["password"]) {
-    echo json_encode(["status" => "error", "message" => "Sai mật khẩu"]);
-    exit;
+// kiểm tra mật khẩu
+if (!password_verify($password, $user['password'])) {
+    json_response([
+        'status'  => 'error',
+        'message' => 'Sai email hoặc mật khẩu'
+    ], 401);
 }
 
-// JSON trả về
-echo json_encode([
-    "status" => "success",
-    "role" => $user["role"],
-    "user" => [
-        "id" => $user["id"],
-        "name" => $user["username"],
-        "email" => $user["email"]
-    ]
+// lưu session
+$_SESSION['user_id']  = $user['id'];
+$_SESSION['username'] = $user['username']; // chính là email
+$_SESSION['role']     = $user['role'];
+
+// trả về JSON cho frontend
+json_response([
+    'status'  => 'success',
+    'message' => 'Đăng nhập thành công',
+    'user'    => [
+        'id'       => (int)$user['id'],
+        'username' => $user['username'],
+        'role'     => $user['role']
+    ],
+    'role' => $user['role']
 ]);
-?>

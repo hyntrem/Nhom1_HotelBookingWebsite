@@ -1,75 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="css/style.css"> 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        .admin-header {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .admin-box {
-            padding: 20px;
-            border-radius: 8px;
-            background: #f7f7f7;
-            border: 1px solid #ddd;
-            margin-bottom: 20px;
-        }
-        .logout-btn {
-            padding: 10px 20px;
-            background: #ff4d4d;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Grandoria Hotel</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <style>
+    :root {
+      --main-green: #2f5d50;
+      --light-green: #e6f3ef;
+      --text-color: #40524d;
+      --white: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: var(--light-green);
+      color: var(--text-color);
+    }
+
+    /* Header */
+    .admin-header {
+      background: var(--main-green);
+      padding: 18px 30px;
+      color: var(--white);
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin-header span {
+      font-weight: 600;
+      color: #ffe;
+    }
+
+    /* Main container */
+    .container {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    /* Admin box */
+    .admin-box {
+      padding: 25px;
+      border-radius: 10px;
+      background: var(--white);
+      border: 1px solid #d9e7e2;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      margin-bottom: 25px;
+    }
+
+    .admin-box h3 {
+      color: var(--main-green);
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .admin-box ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .admin-box li {
+      margin: 10px 0;
+    }
+
+    .admin-box a {
+      color: var(--main-green);
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+
+    .admin-box a:hover {
+      color: #1e4037;
+      text-decoration: underline;
+    }
+
+    /* Logout button */
+    .logout-btn {
+      display: inline-block;
+      padding: 12px 25px;
+      background: #d9534f;
+      color: var(--white);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #c9302c;
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- CHECK QUYỀN ADMIN -->
-<script>
-const user = JSON.parse(localStorage.getItem("user"));
-const role = localStorage.getItem("role");
+  <!-- KIỂM TRA QUYỀN ADMIN (Frontend) -->
+  <script>
+    const currentUser = JSON.parse(localStorage.getItem("user"));
+    const currentRole = localStorage.getItem("role");
 
-if (!user || role !== "admin") {
-    alert("Bạn không có quyền truy cập trang Admin.");
-    window.location.href = "login.html";
-}
-</script>
+    if (!currentUser || currentRole !== "admin") {
+      alert("Bạn không có quyền truy cập trang Admin.");
+      window.location.href = "login.html";
+    }
+  </script>
 
-<div class="admin-header">Welcome Admin: <span id="adminName"></span></div>
+  <!-- HEADER -->
+  <div class="admin-header">
+    <div>Admin Dashboard</div>
+    <div>Xin chào: <span id="adminName"></span></div>
+  </div>
 
-<div class="admin-box">
-    <h3>Quản lý hệ thống</h3>
-    <ul>
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <div class="admin-box">
+      <h3>Quản lý hệ thống</h3>
+      <ul>
         <li><a href="#">Quản lý người dùng</a></li>
         <li><a href="#">Quản lý phòng</a></li>
         <li><a href="#">Quản lý đặt phòng</a></li>
-        <li><a href="#">Báo cáo doanh thu</a></li>
-    </ul>
-</div>
+        <li><a href="#">Thống kê & Báo cáo doanh thu</a></li>
+      </ul>
+    </div>
 
-<button class="logout-btn" onclick="logout()">Đăng xuất</button>
+    <button class="logout-btn" onclick="logout()">Đăng xuất</button>
+  </div>
 
-<script>
-document.getElementById("adminName").innerText = user.name || user.email;
+  <script>
+    // SECOND CHECK — Backend session (PHP)
+    fetch("../server/api/auth_admin.php")
+      .then(res => {
+        if (!res.ok) {
+          alert("Bạn không có quyền admin (server từ chối)!");
+          window.location.href = "index.html";
+        }
+      });
 
-// Hàm logout
-function logout() {
-    localStorage.removeItem("user");
-    localStorage.removeItem("role");
-    window.location.href = "login.html";
-}
-</script>
+    // Hiển thị tên admin
+    document.getElementById("adminName").innerText =
+      currentUser.username || currentUser.email || "Admin";
+
+    // LOGOUT
+    function logout() {
+      localStorage.removeItem("user");
+      localStorage.removeItem("role");
+      window.location.href = "login.html";
+    }
+  </script>
 
 </body>
-</html>
 
+</html>

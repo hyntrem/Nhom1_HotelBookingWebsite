@@ -8,115 +8,95 @@
 
   <!-- Favicons -->
   <link rel="icon" href="assets/img/favicon.png" type="image/png">
-  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
-  <!-- Fonts -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;600;700&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS -->
   <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/vendor/bootstrap-icons/bootstrap-icons.min.css">
   <link rel="stylesheet" href="assets/vendor/aos/aos.css">
 
-  <!-- Main CSS -->
+  <!-- Global CSS -->
   <link rel="stylesheet" href="assets/css/main.css">
 
-  <!-- Custom Auth Page Style -->
+  <!-- Custom Auth Style -->
   <style>
     :root {
       --main-green: #2f5d50;
-      --background-color: #ffffff;
       --text-color: #40524d;
     }
 
     body {
-      background-color: var(--background-color);
+      background-color: #f0f5f3;
       font-family: "Poppins", sans-serif;
-      color: var(--text-color);
-    }
-
-    .auth-container {
-      max-width: 420px;
-      margin: 100px auto;
-      padding: 2rem;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    .auth-container h2 {
-      text-align: center;
-      color: var(--main-green);
-      margin-bottom: 1.5rem;
-      font-weight: 700;
-    }
-
-    .auth-container label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .auth-container input {
-      width: 100%;
-      padding: 10px 14px;
-      margin-bottom: 1rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      transition: border-color 0.3s ease;
-    }
-
-    .auth-container input:focus {
-      border-color: var(--main-green);
-      outline: none;
-      box-shadow: 0 0 0 0.1rem rgba(47, 93, 80, 0.2);
-    }
-
-    .auth-container button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      background-color: var(--main-green);
-      color: #fff;
-      font-weight: 600;
-      transition: background-color 0.3s;
-    }
-
-    .auth-container button:hover {
-      background-color: color-mix(in srgb, var(--main-green), black 10%);
-    }
-
-    .auth-container p {
-      text-align: center;
-      margin-top: 1rem;
-    }
-
-    .auth-container a {
-      color: var(--main-green);
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    .auth-container a:hover {
-      text-decoration: underline;
     }
 
     header .navbar {
       background-color: var(--main-green);
-      padding: 10px 0;
+      padding: 12px 0;
       text-align: center;
     }
 
     header .logo {
-      font-weight: 700;
       color: white;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
+      font-weight: 700;
       text-decoration: none;
+    }
+
+    .auth-container {
+      max-width: 430px;
+      margin: 90px auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 12px 38px rgba(0, 0, 0, 0.08);
+      animation: fadeIn 0.5s;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--main-green);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    input {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      transition: 0.25s;
+    }
+
+    input:focus {
+      border-color: var(--main-green);
+      box-shadow: 0 0 0 0.15rem rgba(47, 93, 80, 0.22);
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      background-color: var(--main-green);
+      font-weight: 600;
+      color: white;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #264b41;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
     }
   </style>
 </head>
@@ -133,18 +113,19 @@
   <!-- REGISTER FORM -->
   <main class="auth-container" data-aos="fade-up">
     <h2>Tạo tài khoản mới</h2>
+
     <form id="registerForm">
       <label for="username">Họ và tên</label>
-      <input type="text" id="username" required placeholder="Nhập họ và tên" />
+      <input type="text" id="username" required placeholder="Nhập họ và tên">
 
       <label for="email">Email</label>
-      <input type="email" id="email" required placeholder="Nhập email của bạn" />
+      <input type="email" id="email" required placeholder="Nhập email của bạn">
 
       <label for="password">Mật khẩu</label>
-      <input type="password" id="password" required placeholder="Tạo mật khẩu" />
+      <input type="password" id="password" required placeholder="Tạo mật khẩu (>= 6 ký tự)">
 
       <label for="confirmPassword">Xác nhận mật khẩu</label>
-      <input type="password" id="confirmPassword" required placeholder="Nhập lại mật khẩu" />
+      <input type="password" id="confirmPassword" required placeholder="Nhập lại mật khẩu">
 
       <button type="submit">Đăng ký</button>
 
@@ -157,37 +138,54 @@
   <script src="assets/vendor/aos/aos.js"></script>
   <script src="assets/js/main.js"></script>
 
+  <!-- Register Logic FIXED -->
   <script>
     document.getElementById("registerForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const username = document.getElementById("username").value;
-      const email = document.getElementById("email").value;
+
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
       const confirmPassword = document.getElementById("confirmPassword").value;
+
+      if (!username || !email || !password) {
+        alert("Vui lòng điền đầy đủ thông tin!");
+        return;
+      }
+
+      if (password.length < 6) {
+        alert("Mật khẩu tối thiểu 6 ký tự!");
+        return;
+      }
 
       if (password !== confirmPassword) {
         alert("Mật khẩu xác nhận không khớp!");
         return;
       }
 
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("email", email);
+      formData.append("password", password);
+
       try {
         const res = await fetch("../server/api/register.php", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, email, password }),
+          body: formData
         });
 
         const data = await res.json();
 
         if (data.status === "success") {
-          alert("Đăng ký thành công! Hãy đăng nhập để tiếp tục.");
+          alert("Đăng ký thành công! Hãy đăng nhập.");
           window.location.href = "login.html";
         } else {
-          alert("Đăng ký thất bại: " + (data.message || "Email đã tồn tại."));
+          alert(data.message || "Email đã tồn tại.");
         }
-      } catch (error) {
-        alert("Lỗi kết nối đến máy chủ!");
-        console.error(error);
+
+      } catch (err) {
+        console.error(err);
+        alert("Không thể kết nối đến server!");
       }
     });
   </script>

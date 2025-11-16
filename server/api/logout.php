@@ -1,6 +1,15 @@
-<?php // logout.php
+<?php
+// server/api/logout.php
+
 session_start();
+require_once __DIR__ . '/../helpers.php';
+
+// Xóa hết session
+$_SESSION = [];
+session_unset();
 session_destroy();
 
-echo json_encode(["success" => true, "message" => "Đăng xuất thành công"]);
-?>
+json_response([
+    'status'  => 'success',
+    'message' => 'Đã đăng xuất'
+]);

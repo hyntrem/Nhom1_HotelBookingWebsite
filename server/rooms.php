@@ -1,1 +1,0 @@
-<?php // rooms.php ?>

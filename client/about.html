@@ -31,25 +31,32 @@
 
 <body class="about-page">
       <!-- HEADER -->
-  <!-- HEADER -->
 <header id="header" class="header sticky-top">
-  <div class="topbar d-flex align-items-center dark-background">
-    <div class="container d-flex justify-content-center justify-content-md-between">
+
+  <!-- Topbar -->
+  <div class="topbar d-flex align-items-center">
+    <div class="container d-flex justify-content-between">
       <div class="contact-info d-flex align-items-center">
         <i class="bi bi-envelope d-flex align-items-center">
           <a href="mailto:contact@grandoriahotel.com">contact@grandoriahotel.com</a>
         </i>
-        <i class="bi bi-phone d-flex align-items-center ms-4"><span>+84 1900 1533</span></i>
+        <i class="bi bi-phone d-flex align-items-center ms-4">
+          <span>+84 1900 1533</span>
+        </i>
       </div>
     </div>
   </div>
 
+  <!-- Branding + Menu -->
   <div class="branding d-flex align-items-center">
-    <div class="container position-relative d-flex align-items-center justify-content-between">
+    <div class="container d-flex align-items-center justify-content-between">
+
+      <!-- Logo -->
       <a href="index.html" class="logo d-flex align-items-center">
         <h1 class="sitename">Grandoria</h1>
       </a>
 
+      <!-- NAVIGATION MENU -->
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="index.html" class="text-uppercase">Trang chủ</a></li>
@@ -58,56 +65,33 @@
           <li><a href="amenities.html" class="text-uppercase">Tiện nghi</a></li>
           <li><a href="offers.html" class="text-uppercase">Ưu đãi</a></li>
           <li><a href="booking.html" class="text-uppercase">Đặt phòng</a></li>
+
+          <!-- Dropdown -->
           <li class="dropdown">
-            <a href="#" class="text-uppercase"><span>Khác</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <a href="#"><span>Khác</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
               <li><a href="terms.html">Điều khoản</a></li>
               <li><a href="privacy.html">Chính sách bảo mật</a></li>
             </ul>
           </li>
         </ul>
+
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <!-- 🔹 Khu vực tài khoản -->
+      <!-- LOGIN / REGISTER / LOGOUT -->
       <div class="auth-buttons d-flex align-items-center gap-3">
-        <span id="welcomeUser" class="text-white fw-semibold"></span>
-        <a href="login.html" id="loginBtn" class="btn btn-outline-light">Đăng nhập</a>
-        <a href="register.html" id="registerBtn" class="btn btn-light text-success fw-semibold">Đăng ký</a>
-        <a href="#" id="logoutBtn" class="btn btn-danger" style="display:none;">Đăng xuất</a>
+        <span id="welcomeUser" class="fw-semibold text-white"></span>
+
+        <a id="loginBtn" href="login.html" class="btn btn-outline-light btn-sm">Đăng nhập</a>
+        <a id="registerBtn" href="register.html" class="btn btn-light text-success btn-sm fw-bold">Đăng ký</a>
+
+        <a id="logoutBtn" href="#" class="btn btn-danger btn-sm" style="display:none;">Đăng xuất</a>
       </div>
+
     </div>
   </div>
 </header>
-
-<!-- JS xử lý login/logout -->
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const userSpan = document.getElementById("welcomeUser");
-    const loginBtn = document.getElementById("loginBtn");
-    const registerBtn = document.getElementById("registerBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    if (user) {
-      userSpan.textContent = `Xin chào, ${user.username || "Khách"}`;
-      loginBtn.style.display = "none";
-      registerBtn.style.display = "none";
-      logoutBtn.style.display = "inline-block";
-    } else {
-      userSpan.textContent = "";
-      logoutBtn.style.display = "none";
-      loginBtn.style.display = "inline-block";
-      registerBtn.style.display = "inline-block";
-    }
-
-    logoutBtn.addEventListener("click", async () => {
-      localStorage.removeItem("user");
-      alert("Đã đăng xuất!");
-      window.location.href = "login.html";
-    });
-  });
-</script>
 
   <!-- MAIN -->
   <main class="main">
@@ -252,5 +236,37 @@
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/aos/aos.js"></script>
   <script src="assets/js/main.js"></script>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const welcomeUser = document.getElementById("welcomeUser");
+  const loginBtn = document.getElementById("loginBtn");
+  const registerBtn = document.getElementById("registerBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (user) {
+      welcomeUser.textContent = "Xin chào, " + (user.username || "Khách");
+
+      loginBtn.style.display = "none";
+      registerBtn.style.display = "none";
+      logoutBtn.style.display = "inline-block";
+  } else {
+      welcomeUser.textContent = "";
+
+      logoutBtn.style.display = "none";
+      loginBtn.style.display = "inline-block";
+      registerBtn.style.display = "inline-block";
+  }
+
+  logoutBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      localStorage.removeItem("user");
+      alert("Bạn đã đăng xuất.");
+      window.location.href = "login.html";
+  });
+});
+</script>
+
 </body>
 </html>

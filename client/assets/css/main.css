@@ -197,79 +197,41 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--nav-dropdown-hover-color);
   }
 }
+/* =============================
+   # Auth Buttons (Login / Register / Logout)
+   ============================= */
 
-/* Mobile */
-@media (max-width: 1199px) {
-  .mobile-nav-toggle {
-    color: var(--nav-color);
-    font-size: 28px;
-    margin-right: 10px;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
+.auth-buttons .btn {
+  padding: 6px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+}
 
-  .navmenu ul {
-    display: none;
-    position: absolute;
-    inset: 60px 20px 20px 20px;
-    background-color: var(--nav-mobile-background-color);
-    list-style: none;
-    border-radius: 6px;
-    padding: 10px 0;
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
-    z-index: 9998;
-  }
+.auth-buttons #loginBtn {
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+}
 
-  .navmenu a {
-    color: var(--nav-dropdown-color);
-    padding: 10px 20px;
-    font-family: var(--nav-font);
-    font-size: 17px;
-    display: flex;
-    justify-content: space-between;
-    transition: 0.3s;
-  }
+.auth-buttons #loginBtn:hover {
+  background-color: rgba(255,255,255,0.2);
+}
 
-  .navmenu a:hover,
-  .navmenu .active {
-    color: var(--nav-dropdown-hover-color);
-  }
+.auth-buttons #registerBtn {
+  background-color: #ffffff !important;
+  color: #2f5d50 !important;
+}
 
-  /* Dropdown - Mobile */
-  .navmenu .dropdown ul {
-    display: none;
-    margin: 10px 20px;
-    padding: 10px 0;
-    background: var(--nav-dropdown-background-color);
-    border-radius: 4px;
-  }
+.auth-buttons #registerBtn:hover {
+  background-color: #e9f5f2 !important;
+}
 
-  .navmenu .dropdown > .dropdown-active {
-    display: block;
-  }
+.auth-buttons #logoutBtn {
+  background-color: #d9534f !important;
+  color: #fff !important;
+}
 
-  /* Khi mở menu */
-  .mobile-nav-active {
-    overflow: hidden;
-  }
-
-  .mobile-nav-active .mobile-nav-toggle {
-    color: #fff;
-    position: absolute;
-    font-size: 32px;
-    top: 15px;
-    right: 15px;
-  }
-
-  .mobile-nav-active .navmenu {
-    position: fixed;
-    inset: 0;
-    background: rgba(33, 37, 41, 0.8);
-  }
-
-  .mobile-nav-active .navmenu > ul {
-    display: block;
-  }
+.auth-buttons #logoutBtn:hover {
+  background-color: #c9302c !important;
 }
 
 /* =============================
