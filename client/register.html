@@ -140,55 +140,56 @@
 
   <!-- Register Logic FIXED -->
   <script>
-    document.getElementById("registerForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+document.getElementById("registerForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-      const username = document.getElementById("username").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
+    const fullName = document.getElementById("username").value.trim();
+    const email    = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirm  = document.getElementById("confirmPassword").value;
 
-      if (!username || !email || !password) {
-        alert("Vui lòng điền đầy đủ thông tin!");
-        return;
-      }
+    if (!fullName || !email || !password || !confirm) {
+        return alert("Vui lòng điền đầy đủ tất cả các trường!");
+    }
+    if (password.length < 6) {
+        return alert("Mật khẩu phải từ 6 ký tự trở lên!");
+    }
+    if (password !== confirm) {
+        return alert("Mật khẩu xác nhận không khớp!");
+    }
 
-      if (password.length < 6) {
-        alert("Mật khẩu tối thiểu 6 ký tự!");
-        return;
-      }
+    const btn = document.querySelector("#registerForm button");
+    const old = btn.innerText;
+    btn.innerText = "Đang tạo tài khoản..."; btn.disabled = true;
 
-      if (password !== confirmPassword) {
-        alert("Mật khẩu xác nhận không khớp!");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("username", username);
-      formData.append("email", email);
-      formData.append("password", password);
-
-      try {
+    try {
         const res = await fetch("../server/api/register.php", {
-          method: "POST",
-          body: formData
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                fullName: fullName,
+                email: email,
+                password: password,
+                confirmPassword: confirm
+            })
         });
 
         const data = await res.json();
 
-        if (data.status === "success") {
-          alert("Đăng ký thành công! Hãy đăng nhập.");
-          window.location.href = "login.html";
+        if (data.status === " success") {
+            alert("Đăng ký thành công! Chào mừng bạn đến với Grandoria Hotel!");
+            location.href = "login.html";
         } else {
-          alert(data.message || "Email đã tồn tại.");
+            alert(data.message || "Có lỗi xảy ra, vui lòng thử lại!");
         }
-
-      } catch (err) {
-        console.error(err);
-        alert("Không thể kết nối đến server!");
-      }
-    });
-  </script>
+    } catch (err) {
+        alert("Lỗi kết nối server!");
+    } finally {
+        btn.innerText = old;
+        btn.disabled = false;
+    }
+});
+</script>
 
 </body>
 </html>

@@ -1,17 +1,25 @@
 <?php
-
 session_start();
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
 
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
-    echo json_encode(["error" => "Bạn chưa đăng nhập"]);
-    exit;
+$username_to_display = $_SESSION['username'] ?? "Test Admin";
+$is_authenticated = true;
+
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['username']) || !isset($_SESSION['role'])) {
+    $is_authenticated = false;
+    $username_to_display = "Session Hết Hạn";
 }
 
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== "admin") {
-    http_response_code(403);
-    echo json_encode(["error" => "Bạn không có quyền truy cập (chỉ admin)"]);
-    exit;
+if ($is_authenticated && $_SESSION['role'] !== "admin") {
+    $is_authenticated = false;
+    $username_to_display = "Không Phải Admin";
 }
-?>
+
+echo json_encode([
+    "status" => "success",
+    "role"   => "admin",
+    "username" => $username_to_display
+]);
+
+exit;

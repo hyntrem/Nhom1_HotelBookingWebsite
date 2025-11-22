@@ -22,11 +22,94 @@
 
   <!-- Main CSS -->
   <link rel="stylesheet" href="assets/css/main.css">
+  
+  <style>
+    /* CSS Tùy Chỉnh cho Lọc và Hiển thị */
+    .no-results {
+      text-align: center;
+      padding: 3rem 1rem;
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      margin: 2rem 0;
+    }
+    
+    .no-results-icon {
+      font-size: 4rem;
+      color: #6c757d;
+      margin-bottom: 1rem;
+    }
+    
+    .no-results h3 {
+      color: #495057;
+      margin-bottom: 1rem;
+    }
+    
+    .no-results p {
+      color: #6c757d;
+      max-width: 500px;
+      margin: 0 auto 1.5rem;
+    }
+    
+    .filter-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+    
+    .filter-suggestion {
+      background-color: #e9ecef;
+      border: none;
+      border-radius: 20px;
+      padding: 5px 15px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .filter-suggestion:hover {
+      background-color: #dee2e6;
+    }
+    
+    .rooms-grid {
+      position: relative;
+      min-height: 300px;
+    }
+    
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      display: none;
+    }
+    
+    .spinner-border {
+      width: 3rem;
+      height: 3rem;
+    }
+    
+    .reset-filters {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    /* Đảm bảo phòng được ẩn/hiện đúng cách */
+    .rooms-grid .col-xl-4, .rooms-grid .col-lg-6 {
+      transition: opacity 0.3s ease;
+    }
+  </style>
 </head>
 
 <body class="rooms-page">
     <!-- HEADER -->
-  <!-- HEADER -->
 <header id="header" class="header sticky-top">
   <div class="topbar d-flex align-items-center dark-background">
     <div class="container d-flex justify-content-center justify-content-md-between">
@@ -103,6 +186,7 @@
     });
   });
 </script>
+
   <!-- MAIN -->
   <main class="main">
 
@@ -115,38 +199,38 @@
       <div class="row g-3 align-items-center">
         <div class="col-lg-3 col-md-6">
           <label class="form-label">Khoảng giá</label>
-          <select class="form-select">
-            <option>Tất cả mức giá</option>
-            <option>2.500.000₫ - 5.000.000₫</option>
-            <option>5.000.000₫ - 8.000.000₫</option>
-            <option>Trên 8.000.000₫</option>
+          <select class="form-select" id="filter-price">
+            <option value="all">Tất cả mức giá</option>
+            <option value="1">2.500.000₫ - 5.000.000₫</option>
+            <option value="2">5.000.000₫ - 8.000.000₫</option>
+            <option value="3">Trên 8.000.000₫</option>
           </select>
         </div>
         <div class="col-lg-3 col-md-6">
           <label class="form-label">Sức chứa</label>
-          <select class="form-select">
-            <option>Tất cả</option>
-            <option>1 - 2 khách</option>
-            <option>3 - 4 khách</option>
-            <option>5 khách trở lên</option>
+          <select class="form-select" id="filter-capacity">
+            <option value="all">Tất cả</option>
+            <option value="1">1 - 2 khách</option>
+            <option value="2">3 - 4 khách</option>
+            <option value="3">5 khách trở lên</option>
           </select>
         </div>
         <div class="col-lg-3 col-md-6">
           <label class="form-label">Tầm nhìn</label>
-          <select class="form-select">
-            <option>Tất cả</option>
-            <option>Hướng biển</option>
-            <option>Hướng thành phố</option>
-            <option>Hướng vườn</option>
+          <select class="form-select" id="filter-view">
+            <option value="all">Tất cả</option>
+            <option value="ocean">Hướng biển</option>
+            <option value="city">Hướng thành phố</option>
+            <option value="garden">Hướng vườn</option>
           </select>
         </div>
         <div class="col-lg-3 col-md-6">
           <label class="form-label">Sắp xếp theo</label>
-          <select class="form-select">
-            <option>Phổ biến</option>
-            <option>Giá: Thấp đến Cao</option>
-            <option>Giá: Cao đến Thấp</option>
-            <option>Kích thước phòng</option>
+          <select class="form-select" id="sort-rooms">
+            <option value="popular">Phổ biến</option>
+            <option value="price-low">Giá: Thấp đến Cao</option>
+            <option value="price-high">Giá: Cao đến Thấp</option>
+            <option value="capacity">Sức chứa</option>
           </select>
         </div>
       </div>
@@ -154,11 +238,17 @@
 
     <!-- Danh sách phòng đầy đủ -->
 <div class="rooms-grid">
-  <div class="row g-4">
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Đang tải...</span>
+    </div>
+  </div>
+  
+  <div class="row g-4" id="roomsContainer">
 
     <!-- Phòng Deluxe -->
     <div class="col-xl-4 col-lg-6">
-      <div class="room-card">
+      <div class="room-card" data-price="6800000" data-capacity="4" data-view="ocean" data-popular="5">
         <div class="room-image">
           <img src="assets/img/hotel/room-1.webp" alt="Phòng Deluxe Hướng Biển" class="img-fluid">
           <div class="room-features">
@@ -194,7 +284,7 @@
 
     <!-- Phòng Doanh Nhân -->
     <div class="col-xl-4 col-lg-6">
-      <div class="room-card">
+      <div class="room-card" data-price="4900000" data-capacity="2" data-view="city" data-popular="4">
         <div class="room-image">
           <img src="assets/img/hotel/room-3.webp" alt="Phòng Executive Business" class="img-fluid">
           <div class="room-features"><span class="feature-badge business">Phòng Doanh Nhân</span></div>
@@ -227,7 +317,7 @@
 
     <!-- Phòng Gia Đình -->
     <div class="col-xl-4 col-lg-6">
-      <div class="room-card">
+      <div class="room-card" data-price="3800000" data-capacity="5" data-view="garden" data-popular="3">
         <div class="room-image">
           <img src="assets/img/hotel/room-7.webp" alt="Phòng Gia Đình Hướng Vườn" class="img-fluid">
           <div class="room-features">
@@ -263,7 +353,7 @@
 
     <!-- Phòng Honeymoon -->
     <div class="col-xl-4 col-lg-6">
-      <div class="room-card">
+      <div class="room-card" data-price="8200000" data-capacity="2" data-view="ocean" data-popular="5">
         <div class="room-image">
           <img src="assets/img/hotel/room-12.webp" alt="Phòng Honeymoon Lãng Mạn" class="img-fluid">
           <div class="room-features">
@@ -299,7 +389,7 @@
 
     <!-- Phòng Tiêu Chuẩn -->
     <div class="col-xl-4 col-lg-6">
-      <div class="room-card">
+      <div class="room-card" data-price="2900000" data-capacity="2" data-view="city" data-popular="2">
         <div class="room-image">
           <img src="assets/img/hotel/room-15.webp" alt="Phòng Tiêu Chuẩn Hướng Thành Phố" class="img-fluid">
           <div class="room-features">
@@ -333,6 +423,23 @@
     </div>
 
   </div>
+  
+  <!-- No results message -->
+  <div class="no-results" id="noResults" style="display: none;">
+    <div class="no-results-icon">
+      <i class="bi bi-search"></i>
+    </div>
+    <h3>Không tìm thấy phòng phù hợp</h3>
+    <p>Rất tiếc, không có phòng nào đáp ứng các tiêu chí lọc của bạn. Vui lòng thử điều chỉnh bộ lọc hoặc xem tất cả các phòng có sẵn.</p>
+    <div class="filter-suggestions">
+      <button class="filter-suggestion" data-filter="price" data-value="all">Tất cả mức giá</button>
+      <button class="filter-suggestion" data-filter="capacity" data-value="all">Tất cả sức chứa</button>
+      <button class="filter-suggestion" data-filter="view" data-value="all">Tất cả tầm nhìn</button>
+    </div>
+    <div class="reset-filters">
+      <button class="btn btn-primary" id="resetAllFilters">Đặt lại tất cả bộ lọc</button>
+    </div>
+  </div>
 </div>
 
 <!-- Nút xem thêm -->
@@ -342,6 +449,8 @@
   </button>
 </div>
   </div>
+</section>
+
   <!-- FOOTER -->
   <footer id="footer" class="footer position-relative dark-background">
     <div class="footer-top">
@@ -409,6 +518,148 @@
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/aos/aos.js"></script>
   <script src="assets/js/main.js"></script>
+
+  <!-- JavaScript cho lọc và sắp xếp phòng -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const filterPrice = document.getElementById("filter-price");
+      const filterCapacity = document.getElementById("filter-capacity");
+      const filterView = document.getElementById("filter-view");
+      const sortRooms = document.getElementById("sort-rooms");
+      const roomsContainer = document.getElementById("roomsContainer");
+      const noResults = document.getElementById("noResults");
+      const loadingOverlay = document.getElementById("loadingOverlay");
+      const resetAllFiltersBtn = document.getElementById("resetAllFilters");
+      const filterSuggestions = document.querySelectorAll(".filter-suggestion");
+      
+      // Lấy tất cả các thẻ phòng ban đầu
+      let allRooms = Array.from(document.querySelectorAll(".room-card"));
+      let filteredRooms = [...allRooms];
+      
+      // Hiển thị hiệu ứng tải
+      function showLoading() {
+        loadingOverlay.style.display = "flex";
+        setTimeout(() => {
+          loadingOverlay.style.display = "none";
+        }, 500); // Tải giả 0.5 giây
+      }
+      
+      // Áp dụng Lọc và Sắp xếp
+      function applyFilters() {
+        showLoading();
+        
+        setTimeout(() => {
+          const priceVal = filterPrice.value;
+          const capacityVal = filterCapacity.value;
+          const viewVal = filterView.value;
+          const sortVal = sortRooms.value;
+          
+          // Lọc phòng (Filter logic)
+          filteredRooms = allRooms.filter(room => {
+            const price = parseInt(room.dataset.price);
+            const capacity = parseInt(room.dataset.capacity);
+            const view = room.dataset.view;
+            let isMatch = true;
+            
+            // Lọc theo Khoảng giá
+            if (priceVal !== "all") {
+              if (priceVal === "1" && !(price >= 2500000 && price <= 5000000)) isMatch = false;
+              else if (priceVal === "2" && !(price > 5000000 && price <= 8000000)) isMatch = false;
+              else if (priceVal === "3" && !(price > 8000000)) isMatch = false;
+            }
+            
+            // Lọc theo Sức chứa
+            if (capacityVal !== "all") {
+              if (capacityVal === "1" && !(capacity <= 2)) isMatch = false;
+              else if (capacityVal === "2" && !(capacity >= 3 && capacity <= 4)) isMatch = false;
+              else if (capacityVal === "3" && !(capacity >= 5)) isMatch = false;
+            }
+            
+            // Lọc theo Tầm nhìn
+            if (viewVal !== "all" && view !== viewVal) isMatch = false;
+            
+            return isMatch;
+          });
+          
+          // Sắp xếp phòng (Sort logic)
+          if (sortVal === "price-low") {
+            filteredRooms.sort((a, b) => parseInt(a.dataset.price) - parseInt(b.dataset.price));
+          } else if (sortVal === "price-high") {
+            filteredRooms.sort((a, b) => parseInt(b.dataset.price) - parseInt(a.dataset.price));
+          } else if (sortVal === "capacity") {
+            filteredRooms.sort((a, b) => parseInt(b.dataset.capacity) - parseInt(a.dataset.capacity));
+          } else if (sortVal === "popular") {
+            filteredRooms.sort((a, b) => parseInt(b.dataset.popular) - parseInt(a.dataset.popular));
+          }
+          
+          // Cập nhật hiển thị
+          updateRoomDisplay();
+        }, 300);
+      }
+      
+      // Cập nhật hiển thị phòng dựa trên kết quả lọc
+      function updateRoomDisplay() {
+        // Ẩn tất cả các phòng trước
+        allRooms.forEach(room => {
+          room.parentElement.style.display = "none";
+        });
+        
+        // Hiển thị các phòng đã lọc
+        if (filteredRooms.length > 0) {
+          filteredRooms.forEach(room => {
+            // Hiển thị lại thẻ cha (col-...)
+            room.parentElement.style.display = "block";
+          });
+          noResults.style.display = "none";
+        } else {
+          noResults.style.display = "block";
+        }
+        
+        // Sắp xếp lại các phần tử DOM trong container
+        const roomsRow = document.querySelector(".row.g-4");
+        filteredRooms.forEach(room => {
+          roomsRow.appendChild(room.parentElement);
+        });
+      }
+      
+      // Đặt lại tất cả bộ lọc
+      function resetAllFilters() {
+        filterPrice.value = "all";
+        filterCapacity.value = "all";
+        filterView.value = "all";
+        sortRooms.value = "popular";
+        applyFilters();
+      }
+      
+      // Thêm trình nghe sự kiện (Event listeners)
+      filterPrice.addEventListener("change", applyFilters);
+      filterCapacity.addEventListener("change", applyFilters);
+      filterView.addEventListener("change", applyFilters);
+      sortRooms.addEventListener("change", applyFilters);
+      resetAllFiltersBtn.addEventListener("click", resetAllFilters);
+      
+      // Các nút gợi ý lọc (khi không có kết quả)
+      filterSuggestions.forEach(button => {
+        button.addEventListener("click", () => {
+          const filterType = button.dataset.filter;
+          const value = button.dataset.value;
+          
+          if (filterType === "price") {
+            filterPrice.value = value;
+          } else if (filterType === "capacity") {
+            filterCapacity.value = value;
+          } else if (filterType === "view") {
+            filterView.value = value;
+          }
+          
+          applyFilters();
+        });
+      });
+      
+      // Khởi tạo hiển thị ban đầu
+      updateRoomDisplay();
+    });
+  </script>
 
 </body>
 </html>

@@ -125,54 +125,55 @@
   <script src="assets/js/main.js"></script>
 
   <!-- Login Logic FIXED -->
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-      if (!email || !password) {
-        alert("Vui lòng nhập đầy đủ thông tin!");
-        return;
-      }
+    if (!email || !password) {
+        return alert("Vui lòng nhập đầy đủ email và mật khẩu!");
+    }
 
-      const formData = new FormData();
-      formData.append("email", email);
-      formData.append("password", password);
+    const btn = document.querySelector("#loginForm button[type='submit']");
+    const oldText = btn.innerText;
+    btn.innerText = "Đang đăng nhập...";
+    btn.disabled = true;
 
-      try {
+    try {
         const res = await fetch("../server/api/login.php", {
-          method: "POST",
-          body: formData
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
         });
 
         const data = await res.json();
+        console.log("Phản hồi từ server:", data);
 
-        if (!data.success) {
-          alert(data.message || "Sai email hoặc mật khẩu!");
-          return;
-        }
+        if (data.status && data.status.trim() === "success" && data.user) {
+            localStorage.setItem("user", JSON.stringify(data.user));
 
-        // Save login info
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("role", data.user.role);
+            const role = (data.user.role || "").toString().toLowerCase();
 
-        alert("Đăng nhập thành công!");
-
-        // Redirect
-        if (data.user.role === "admin") {
-          window.location.href = "admin_dashboard.html";
+            if (role === "admin") {
+                alert("Chào mừng Quản trị viên đến với Grandoria Hotel!");
+                window.location.href = "admin_dashboard.html";
+            } else {
+                alert("Đăng nhập thành công! Chào mừng bạn trở lại!");
+                window.location.href = "index.html";
+            }
         } else {
-          window.location.href = "index.html";
+            alert(data.message || "Sai email hoặc mật khẩu!");
         }
-
-      } catch (err) {
-        alert("Không thể kết nối server!");
-        console.error(err);
-      }
-    });
-  </script>
-
+    } catch (err) {
+        console.error("Lỗi kết nối:", err);
+        alert("Không thể kết nối đến server!");
+    } finally {
+        btn.innerText = oldText;
+        btn.disabled = false;
+    }
+});
+</script>
 </body>
 </html>

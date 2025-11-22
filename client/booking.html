@@ -20,12 +20,65 @@
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
   <link href="assets/css/main.css" rel="stylesheet">
-</head>
 
+  <style>
+    .room-card {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .room-card:hover {
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      transform: translateY(-5px);
+    }
+    .room-card.selected {
+      border-color: #198754;
+      box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.2);
+    }
+    .room-image {
+      height: 180px;
+      object-fit: cover;
+    }
+    .room-price {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #198754;
+    }
+    .filter-sidebar {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 12px;
+      height: fit-content;
+    }
+    .amenity-filter label {
+      font-size: 0.9rem;
+    }
+    #totalPrice {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #198754;
+    }
+  </style>
+</head>
 <body class="booking-page">
 
-<!-- HEADER -->
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner-border text-light" role="status">
+    <span class="visually-hidden">Đang xử lý...</span>
+  </div>
+  <span class="ms-3">Đang gửi yêu cầu đặt phòng...</span>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<!-- HEADER -->  
 <header id="header" class="header sticky-top">
+  <!-- [Giữ nguyên phần header của bạn] -->
   <div class="topbar d-flex align-items-center dark-background">
     <div class="container d-flex justify-content-center justify-content-md-between">
       <div class="contact-info d-flex align-items-center">
@@ -36,21 +89,18 @@
       </div>
     </div>
   </div>
-
   <div class="branding d-flex align-items-center">
     <div class="container position-relative d-flex align-items-center justify-content-between">
-      
       <a href="index.html" class="logo d-flex align-items-center">
         <h1 class="sitename">Grandoria</h1>
       </a>
-
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="index.html">Trang chủ</a></li>
           <li><a href="about.html">Giới thiệu</a></li>
           <li><a href="rooms.html">Phòng</a></li>
           <li><a href="amenities.html">Tiện nghi</a></li>
-          <li><a href="offers.html">Ưu đãi</a></li>
+          <li><a href="offers.shtml">Ưu đãi</a></li>
           <li><a href="booking.html" class="active">Đặt phòng</a></li>
           <li class="dropdown">
             <a href="#"><span>Khác</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
@@ -62,14 +112,12 @@
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
-
       <div class="auth-buttons d-flex align-items-center gap-3">
         <span id="welcomeUser" class="text-white fw-semibold"></span>
         <a href="login.html" id="loginBtn" class="btn btn-outline-light btn-sm">Đăng nhập</a>
         <a href="register.html" id="registerBtn" class="btn btn-light text-success btn-sm fw-bold">Đăng ký</a>
         <a href="#" id="logoutBtn" class="btn btn-danger btn-sm" style="display:none;">Đăng xuất</a>
       </div>
-
     </div>
   </div>
 </header>
@@ -77,7 +125,6 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const user = JSON.parse(localStorage.getItem("user"));
-  
   const welcomeUser = document.getElementById("welcomeUser");
   const loginBtn = document.getElementById("loginBtn");
   const registerBtn = document.getElementById("registerBtn");
@@ -94,6 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
   registerBtn.style.display = "none";
   logoutBtn.style.display = "inline-block";
 
+  // Tự động điền thông tin khách từ tài khoản
+  document.getElementById("primary-guest").value = user.fullname || user.username || "";
+  document.getElementById("contact-phone").value = user.phone || "";
+
   logoutBtn.addEventListener("click", () => {
     localStorage.removeItem("user");
     alert("Bạn đã đăng xuất.");
@@ -104,7 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <!-- MAIN CONTENT -->
 <main class="main">
-
   <div class="page-title light-background">
     <div class="container d-lg-flex justify-content-between align-items-center">
       <h1>Đặt Phòng</h1>
@@ -120,71 +170,56 @@ document.addEventListener("DOMContentLoaded", () => {
   <!-- Booking Section -->
   <section id="booking" class="booking section">
     <div class="container">
-
       <div class="reservation-wrapper">
-
         <div class="reservation-header text-center mb-4">
           <h2>Đặt Phòng Của Bạn</h2>
           <p class="lead">Quy trình đặt phòng nhanh chóng – tiện lợi – chuyên nghiệp.</p>
         </div>
-
         <div class="booking-grid">
-
           <!-- Booking Form -->
           <div class="booking-form-section">
             <div class="form-container">
               <form id="bookingForm" class="reservation-form">
-
                 <div class="form-section">
                   <h4>Thông Tin Đặt Phòng</h4>
                   <div class="form-grid">
-
                     <div class="form-group full-width">
                       <label for="room-select">Chọn phòng</label>
                       <select id="room-select" class="form-select" required>
                         <option value="">Chọn phòng</option>
-                        <option value="1">Standard Room - 500.000</option>
-                        <option value="2">Deluxe Room - 800.000</option>
-                        <option value="3">Suite Room - 1.200.000</option>
+                        <option value="1">Standard Room - 500.000 VND</option>
+                        <option value="2">Deluxe Room - 800.000 VND</option>
+                        <option value="3">Suite Room - 1.200.000 VND</option>
                       </select>
                     </div>
-
                     <div class="form-group">
                       <label for="arrival-date">Ngày nhận phòng</label>
                       <input type="date" id="arrival-date" class="form-control" required>
                     </div>
-
                     <div class="form-group">
                       <label for="departure-date">Ngày trả phòng</label>
                       <input type="date" id="departure-date" class="form-control" required>
                     </div>
-
                   </div>
                 </div>
-
                 <div class="form-section">
                   <h4>Thông Tin Khách Hàng</h4>
                   <div class="form-grid full-width">
-
                     <div class="form-group full-width">
                       <label for="primary-guest">Họ và tên</label>
                       <input type="text" id="primary-guest" class="form-control" required>
                     </div>
-
                     <div class="form-group full-width">
                       <label for="contact-phone">Số điện thoại</label>
-                      <input type="tel" id="contact-phone" class="form-control" required>
+                      <input type="tel" id="contact-phone" class="form-control" required pattern="[0-9]{10,11}">
                     </div>
-
                   </div>
                 </div>
-
                 <div class="form-actions">
-                  <button type="submit" class="btn btn-primary">
+                  <button type="submit" class="btn btn-primary btn-lg">
                     <i class="bi bi-calendar-plus me-2"></i> Gửi yêu cầu đặt phòng
                   </button>
                 </div>
-
               </form>
             </div>
           </div>
@@ -194,7 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="showcase-image">
               <img src="assets/img/hotel/showcase-1.webp" class="img-fluid">
             </div>
-
             <div class="hotel-highlights mt-3">
               <h3>Vì sao chọn chúng tôi</h3>
               <ul class="highlights-grid">
@@ -204,30 +238,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 <li><i class="bi bi-heart-pulse"></i> Spa & Gym cao cấp</li>
               </ul>
             </div>
-
           </div>
-
         </div>
-
       </div>
     </div>
   </section>
-
 </main>
 
 <!-- FOOTER -->
 <footer id="footer" class="footer dark-background">
+  <!-- [Giữ nguyên footer của bạn] -->
   <div class="footer-top">
     <div class="container">
       <div class="row gy-4">
-
         <div class="col-lg-4 col-md-6 footer-about">
           <span class="sitename">Grandoria Hotel</span>
           <p class="pt-3">123 Ocean View Avenue, Đà Nẵng, Việt Nam</p>
           <p><strong>Hotline:</strong> +84 1900 1533</p>
           <p><strong>Email:</strong> contact@grandoriahotel.com</p>
         </div>
-
         <div class="col-lg-2 col-md-3 footer-links">
           <h4>Liên kết nhanh</h4>
           <ul>
@@ -238,53 +267,105 @@ document.addEventListener("DOMContentLoaded", () => {
             <li><a href="offers.html">Ưu đãi</a></li>
           </ul>
         </div>
-
       </div>
     </div>
   </div>
 </footer>
 
-<!-- JS -->
+<!-- JS Files -->
 <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="assets/vendor/aos/aos.js"></script>
 <script src="assets/js/main.js"></script>
 
-<!-- BOOKING SUBMIT JS – FIXED FOR DB -->
+<!-- Toast Notification Function -->
+<script>
+function showToast(message, type = 'success') {
+  const toastContainer = document.querySelector('.toast-container');
+  const toastId = 'toast-' + Date.now();
+
+  const bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+  const icon = type === 'success' ? 'bi-check-circle' : 'bi-exclamation-triangle';
+
+  const toastHTML = `
+    <div id="${toastId}" class="toast align-items-center text-white ${bgClass} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          <i class="bi ${icon} me-2"></i> ${message}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>`;
+
+  toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+  const toastEl = document.getElementById(toastId);
+  const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
+  toast.show();
+
+  toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+}
+</script>
+
+<!-- Booking Submit + Validation + Loading + Toast -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("bookingForm");
+  const loadingOverlay = document.getElementById("loadingOverlay");
+
+  // Set min date = today
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("arrival-date").setAttribute("min", today);
+  document.getElementById("departure-date").setAttribute("min", today);
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) {
-      alert("Vui lòng đăng nhập trước khi đặt phòng!");
+    const arrival = new Date(document.getElementById("arrival-date").value);
+    const departure = new Date(document.getElementById("departure-date").value);
+
+    if (departure <= arrival) {
+      showToast("Ngày trả phòng phải sau ngày nhận phòng!", "danger");
       return;
     }
 
+    if (!document.getElementById("room-select").value) {
+      showToast("Vui lòng chọn loại phòng!", "danger");
+      return;
+    }
+
+    loadingOverlay.style.display = "flex";
+
+    const user = JSON.parse(localStorage.getItem("user"));
     const payload = {
       user_id: user.id,
       homestay_id: document.getElementById("room-select").value,
-      guest_name: document.getElementById("primary-guest").value,
-      guest_phone: document.getElementById("contact-phone").value,
+      guest_name: document.getElementById("primary-guest").value.trim(),
+      guest_phone: document.getElementById("contact-phone").value.trim(),
       check_in_date: document.getElementById("arrival-date").value,
       check_out_date: document.getElementById("departure-date").value
     };
 
-    const res = await fetch("../server/api/booking.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+    try {
+      const res = await fetch("../server/api/booking.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.status === "success") {
-      alert("Đặt phòng thành công!");
-      window.location.href = "index.html";
-    } else {
-      alert(data.message || "Đặt phòng thất bại!");
+      if (data.status === "success") {
+        showToast("Đặt phòng thành công! Chúng tôi sẽ liên hệ bạn sớm nhất.", "success");
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 2000);
+      } else {
+        showToast(data.message || "Đặt phòng thất bại, vui lòng thử lại!", "danger");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Lỗi kết nối server. Vui lòng thử lại sau!", "danger");
+    } finally {
+      loadingOverlay.style.display = "none";
     }
   });
 });
