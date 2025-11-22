@@ -1,12 +1,11 @@
 <?php
-// server/api/register.php
+// register.php
 
 require_once __DIR__ . '/../db_connect.php';
 require_once __DIR__ . '/../helpers.php';
 
 $input = json_input();
 
-// Nhận đúng các field mà frontend đang gửi
 $fullName       = trim($input['fullName'] ?? '');
 $email          = trim($input['email'] ?? '');
 $password       = trim($input['password'] ?? '');
