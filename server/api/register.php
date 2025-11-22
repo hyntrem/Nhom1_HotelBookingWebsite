@@ -45,3 +45,4 @@ if ($stmt->rowCount() > 0) {
 }
 
 json_response(['status' => 'error', 'message' => 'Lỗi tạo tài khoản, vui lòng thử lại'], 500);
+?>
