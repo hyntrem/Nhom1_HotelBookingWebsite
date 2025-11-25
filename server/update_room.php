@@ -1,55 +1,60 @@
 <?php
-// update_room.php
-
-require_once __DIR__ . '/../db_connect.php';
+require_once __DIR__ . '/db_connect.php';
 session_start();
 
-if($_SERVER['REQUEST_METHOD'] !== 'POST'){
-    echo "<script>alert('Phải gọi bằng POST');history.back();</script>";
-    exit;
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    die("This endpoint only accepts POST requests");
 }
 
-$id = intval($_POST['id'] ?? 0);
-$name = trim($_POST['name'] ?? '');
-$price = trim($_POST['price'] ?? '0');
+$id          = intval($_POST['id'] ?? 0);
+$name        = trim($_POST['name'] ?? '');
+$price       = trim($_POST['price'] ?? '');
 $description = trim($_POST['description'] ?? '');
 
-if($id <= 0){
-    echo "<script>alert('ID không hợp lệ');history.back();</script>";
-    exit;
+if ($id <= 0 || $name === '' || $price === '') {
+    die("Invalid input");
 }
 
+// Lấy hình cũ
 $stmt = $pdo->prepare("SELECT image FROM rooms WHERE id = ?");
 $stmt->execute([$id]);
-$old = $stmt->fetch(PDO::FETCH_ASSOC);
-$imagePath = $old['image'] ?? '';
+$old = $stmt->fetch();
 
-if(!empty($_FILES['image']['name'])){
-    $uploadsDir = __DIR__ . '/../../client/uploads';
-    if(!is_dir($uploadsDir)) mkdir($uploadsDir, 0755, true);
-    $safe = time(). '_' . preg_replace('/[^A-Za-z0-9._-]/','_', basename($_FILES['image']['name']));
-    $target = $uploadsDir . '/' . $safe;
-    if(!move_uploaded_file($_FILES['image']['tmp_name'], $target)){
-        echo "<script>alert('Lỗi upload ảnh mới');history.back();</script>";
-        exit;
+$imagePath = $old['image'];
+
+// Upload hình mới nếu có
+if (!empty($_FILES['image']['name'])) {
+
+    // Xóa hình cũ
+    if ($imagePath && file_exists(__DIR__ . "/" . $imagePath)) {
+        unlink(__DIR__ . "/" . $imagePath);
     }
 
-    if(!empty($imagePath)){
-        $oldPath = __DIR__ . '/../../client/' . $imagePath;
-        if(file_exists($oldPath)) @unlink($oldPath);
+    // Upload hình mới
+    $uploadDir = __DIR__ . "/uploads/";
+    if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+    $filename = time() . "_" . basename($_FILES['image']['name']);
+    $target   = $uploadDir . $filename;
+
+    if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+        $imagePath = "uploads/" . $filename;
     }
-    $imagePath = 'uploads/' . $safe;
 }
 
-$sql = "UPDATE rooms SET name=:name, price=:price, description=:description, image=:image WHERE id=:id";
+$sql = "UPDATE rooms 
+        SET name=:name, price=:price, description=:description, image=:image 
+        WHERE id=:id";
+
 $stmt = $pdo->prepare($sql);
-$ok = $stmt->execute([':name'=>$name, ':price'=>$price, ':description'=>$description, ':image'=>$imagePath, ':id'=>$id]);
 
-if($ok){
-    echo "<script>alert('Cập nhật phòng thành công');window.location='../../client/admin_rooms.html';</script>";
-    exit;
-} else {
-    echo "<script>alert('Lỗi khi cập nhật phòng');history.back();</script>";
-    exit;
-}
+$ok = $stmt->execute([
+    ":name" => $name,
+    ":price" => $price,
+    ":description" => $description,
+    ":image" => $imagePath,
+    ":id" => $id
+]);
+
+echo $ok ? "SUCCESS" : "FAILED";
 ?>
